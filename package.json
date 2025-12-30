@@ -1,0 +1,10 @@
+{
+  "name": "com.arunoki.collections",
+  "version": "0.1.0",
+  "displayName": "Arunoki Collections",
+  "description": "Reusable module",
+  "unity": "2025.0",
+  "author": {
+    "name": "Artem Safronov"
+  }
+}
