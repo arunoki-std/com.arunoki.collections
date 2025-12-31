@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Arunoki.Collections
 {
@@ -17,27 +16,13 @@ namespace Arunoki.Collections
       this.targetSetHandler = targetSetHandler;
     }
 
-    public void ForEach<T> (Action<T> action)
-    {
-      foreach (var element in GetAll<T> ())
-        action (element);
-    }
+    public abstract void Cast<T> (Action<T> action);
 
-    public abstract IEnumerable<T> GetAll<T> ();
-
-    public abstract IEnumerable<TElement> GetAll ();
+    public abstract void Cast<T> (Func<T, bool> condition, Action<T> action);
 
     public abstract void ForEach (Action<TElement> action);
-    
-    public abstract IEnumerable<T> Where<T> (Predicate<T> condition);
 
-    public abstract IEnumerable<TElement> Where (Predicate<TElement> condition);
-
-    public abstract void ForEach (Predicate<TElement> condition, Action<TElement> action);
-
-    public abstract void ForEachOf<T> (Predicate<T> condition, Action<T> action);
-
-    
+    public abstract void Where (Func<TElement, bool> condition, Action<TElement> action);
 
     public bool IsElement<T> () => typeof(T) == elementType;
 

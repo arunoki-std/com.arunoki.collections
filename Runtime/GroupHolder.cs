@@ -20,79 +20,55 @@ namespace Arunoki.Collections
       (this as ISetHandler<TElement>).TargetSetHandler = setHandler;
     }
 
-    public virtual void AddGroupsFrom (object source)
+    public virtual void FindSetsAt (object source)
     {
-      foreach (var group in source.GetAllProperties<BaseSet<TElement>> ())
-        AddGroup (group);
+      foreach (var set in source.GetAllProperties<BaseSet<TElement>> ())
+        AddSet (set);
     }
 
-    public virtual void AddGroup (BaseSet<TElement> sets)
+    public virtual void AddSet (BaseSet<TElement> set)
     {
-      if (!groups.Contains (sets))
+      if (set == this) return;
+      if (set is null) return;
+
+      if (!groups.Contains (set))
       {
-        groups.Insert (0, sets);
+        groups.Insert (0, set);
       }
     }
 
-    public virtual void ForEachGroup<TGroup> (Action<TGroup> action)
+    public virtual void ForEachSet<TSet> (Action<TSet> action)
     {
       for (var i = groups.Count - 1; i >= 0; i--)
-        if (groups [i] is TGroup group)
-          action (group);
+        if (groups [i] is TSet set)
+          action (set);
     }
 
-    public virtual IEnumerable<TGroup> ForEachGroup<TGroup> ()
+    public virtual bool ForAnySet<TSet> (Func<TSet, bool> condition)
     {
       for (var i = groups.Count - 1; i >= 0; i--)
-        if (groups [i] is TGroup group)
-          yield return group;
+        if (groups [i] is TSet set && condition (set))
+          return true;
+
+      return false;
     }
 
-    public virtual void SelectGroup<TGroup> (Predicate<TGroup> condition, Action<TGroup> action)
+    public override void Where (Func<TElement, bool> condition, Action<TElement> action)
     {
       for (var i = groups.Count - 1; i >= 0; i--)
-        if (groups [i] is TGroup group && condition (group))
-          action (group);
+        groups [i].Where (condition, action);
     }
 
-    public override IEnumerable<T> GetAll<T> ()
+    public override void Cast<T> (Action<T> action)
     {
       for (var i = groups.Count - 1; i >= 0; i--)
-        foreach (T element in groups [i].GetAll<T> ())
-          yield return element;
+        groups [i].Cast (action);
     }
 
-    public override IEnumerable<TElement> GetAll ()
+    public override void Cast<T> (Func<T, bool> condition, Action<T> action)
     {
       for (var i = groups.Count - 1; i >= 0; i--)
-        foreach (TElement element in groups [i].GetAll<TElement> ())
-          yield return element;
-    }
-
-    public override IEnumerable<T> Where<T> (Predicate<T> condition)
-    {
-      for (var i = groups.Count - 1; i >= 0; i--)
-        foreach (T element in groups [i].Where (condition))
-          yield return element;
-    }
-
-    public override IEnumerable<TElement> Where (Predicate<TElement> condition)
-    {
-      for (var i = groups.Count - 1; i >= 0; i--)
-        foreach (TElement element in groups [i].Where (condition))
-          yield return element;
-    }
-
-    public override void ForEach (Predicate<TElement> condition, Action<TElement> action)
-    {
-      for (var i = groups.Count - 1; i >= 0; i--)
-        groups [i].ForEach (condition, action);
-    }
-
-    public override void ForEachOf<T> (Predicate<T> condition, Action<T> action)
-    {
-      for (var i = groups.Count - 1; i >= 0; i--)
-        groups [i].ForEachOf (condition, action);
+        groups [i].Cast (condition, action);
     }
 
     public override void ForEach (Action<TElement> action)
