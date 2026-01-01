@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Arunoki.Collections
 {
-  public partial class Set<TElement> : BaseSet<TElement>
+  public partial class Set<TElement>
   {
     protected List<TElement> Elements = new();
 
@@ -15,7 +15,7 @@ namespace Arunoki.Collections
     {
     }
 
-    public TElement this [int index] => Elements [index];
+    public TElement this [int index] => Elements [(Elements.Count - 1) - index];
 
     public int Count => Elements.Count;
 
@@ -34,34 +34,12 @@ namespace Arunoki.Collections
     {
       if (index > -1 && index < Elements.Count)
       {
-        OnElementRemoved (Elements [index]);
         Elements.RemoveAt (index);
+        OnElementRemoved (Elements [index]);
         return true;
       }
 
       return false;
-    }
-
-    public virtual void RemoveWhere (Func<TElement, bool> condition)
-    {
-      for (var index = Elements.Count - 1; index >= 0; index--)
-        if (condition (Elements [index]))
-          RemoveAt (index);
-    }
-
-    protected void RemoveNulls ()
-    {
-      for (var index = Elements.Count - 1; index >= 0; index--)
-        if (Elements [index] is null)
-          Elements.RemoveAt (index);
-    }
-
-    public override void Clear ()
-    {
-      for (var index = Elements.Count - 1; index >= 0; index--)
-        RemoveAt (index);
-
-      Elements = new();
     }
   }
 }
