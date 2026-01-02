@@ -13,24 +13,8 @@ namespace Arunoki.Collections
 
     protected virtual void Add (Type keyType, params TElement [] elements)
     {
-      if (!setsCache.TryGetValue (keyType, out Set<TElement> set))
-      {
-        set = new Set<TElement> (this);
-        setsList.Add (set);
-        setsCache.Add (keyType, set);
-      }
-
-      foreach (var element in elements)
-        set.Add (element);
-    }
-
-    protected internal virtual void Clear (Type keyType)
-    {
-      if (setsCache.TryGetValue (keyType, out Set<TElement> set))
-      {
-        set.ForEach (OnElementRemoved);
-        set.Clear ();
-      }
+      var set = GetOrCreate (keyType);
+      foreach (var element in elements) set.Add (element);
     }
 
     public void RemoveWhere (Func<TElement, bool> condition)
@@ -39,7 +23,7 @@ namespace Arunoki.Collections
         setsList [index].RemoveWhere (condition);
     }
 
-    protected internal virtual bool Remove (TElement element)
+    protected internal bool Remove (TElement element)
     {
       for (int index = 0; index < setsList.Count; index++)
         if (setsList [index].Remove (element))
@@ -110,12 +94,39 @@ namespace Arunoki.Collections
       }
     }
 
-    public Set<TElement> Get<TType> () => setsCache [typeof(TType)];
+    protected internal virtual void Clear (Type keyType)
+    {
+      if (setsCache.TryGetValue (keyType, out Set<TElement> set))
+      {
+        set.ForEach (OnElementRemoved);
+        set.Clear ();
+      }
+    }
 
     public virtual void Clear ()
     {
       for (var i = 0; i < setsList.Count; i++)
         setsList [i].Clear ();
     }
+
+    protected Set<TElement> GetOrCreate<TType> () => GetOrCreate (typeof(TType));
+
+    protected Set<TElement> GetOrCreate (Type type)
+    {
+      if (!setsCache.TryGetValue (type, out Set<TElement> set))
+      {
+        set = new Set<TElement> ();
+        setsList.Add (set);
+        setsCache.Add (type, set);
+      }
+
+      return set;
+    }
+
+    public Set<TElement> Get<TType> ()
+      => setsCache [typeof(TType)];
+
+    public bool TryGet<TType> (out Set<TElement> set)
+      => setsCache.TryGetValue (typeof(TType), out set);
   }
 }

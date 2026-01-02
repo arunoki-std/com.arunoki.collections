@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace Arunoki.Collections
 {
+  /// Ordered unique collection.
+  /// Iteration order: insertion order (oldest to newest).
+  /// Internal storage may differ to allow removing current element during iteration.
   public partial class Set<TElement> : ElementHandler<TElement>
   {
     protected List<TElement> Elements = new();
@@ -13,8 +16,8 @@ namespace Arunoki.Collections
     public Set (IElementHandler<TElement> targetHandler) : base (targetHandler) { }
 
     public TElement this [int index] => Elements [(Elements.Count - 1) - index];
-
     public int Count => Elements.Count;
+    public bool Contains (TElement element) => Elements.Contains (element);
 
     public virtual void Add (TElement element)
     {
@@ -30,6 +33,25 @@ namespace Arunoki.Collections
 
       Elements.Insert (0, element);
       OnElementAdded (element);
+    }
+
+    public virtual bool TryAdd (TElement element)
+    {
+      if (Utils.IsDebug ())
+      {
+        if (element is null)
+          throw new ArgumentNullException (nameof(element),
+            $"Trying to add a null as element to the collection '{this}'.");
+      }
+
+      if (!Elements.Contains (element))
+      {
+        Elements.Insert (0, element);
+        OnElementAdded (element);
+        return true;
+      }
+
+      return false;
     }
 
     public virtual bool Remove (TElement element)

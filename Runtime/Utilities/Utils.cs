@@ -19,14 +19,5 @@ namespace Arunoki.Collections.Utilities
       return false;
 #endif
     }
-
-    public static bool IsWarningsEnabled ()
-    {
-#if ARUNOKI_WARNINGS
-      return true;
-#else
-      return false;
-#endif
-    }
   }
 }
