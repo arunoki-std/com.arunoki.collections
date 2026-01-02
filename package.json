@@ -2,9 +2,21 @@
   "name": "com.arunoki.collections",
   "version": "0.1.0",
   "displayName": "Arunoki Collections",
-  "description": "Reusable module",
-  "unity": "2025.0",
+  "description": "Allocation-free collection utilities for Unity",
+  "documentationUrl": "https://github.com/arunoki-std/com.arunoki.collections",
+  "unity": "2021.3",
   "author": {
-    "name": "Artem Safronov"
-  }
+    "name": "Arunoki Studio",
+    "url": "https://www.arunoki.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arunoki-std/com.arunoki.collections.git"
+  },
+  "keywords": [
+    "arunoki",
+    "collections",
+    "performance",
+    "gc"
+  ]
 }
