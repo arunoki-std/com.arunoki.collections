@@ -3,18 +3,13 @@ using System.Collections.Generic;
 
 namespace Arunoki.Collections
 {
-  public class TypeSets<TElement> : BaseSet<TElement>
+  public class SetsTypeCollection<TElement> : ElementHandler<TElement>
   {
     private readonly Dictionary<Type, Set<TElement>> setsCache = new();
     private readonly List<Set<TElement>> setsList = new();
 
-    public TypeSets ()
-    {
-    }
-
-    public TypeSets (ISetHandler<TElement> targetSetHandler) : base (targetSetHandler)
-    {
-    }
+    public SetsTypeCollection () : this (null) { }
+    public SetsTypeCollection (IElementHandler<TElement> elementHandler) : base (elementHandler) { }
 
     protected virtual void Add (Type keyType, params TElement [] elements)
     {
@@ -38,7 +33,7 @@ namespace Arunoki.Collections
       }
     }
 
-    public override void RemoveWhere (Func<TElement, bool> condition)
+    public void RemoveWhere (Func<TElement, bool> condition)
     {
       for (int index = 0; index < setsList.Count; index++)
         setsList [index].RemoveWhere (condition);
@@ -65,7 +60,7 @@ namespace Arunoki.Collections
       }
     }
 
-    public override void Cast<T> (Action<T> action)
+    public void Cast<T> (Action<T> action)
     {
       for (var i = 0; i < setsList.Count; i++)
       {
@@ -77,7 +72,7 @@ namespace Arunoki.Collections
       }
     }
 
-    public override void Cast<T> (Func<T, bool> condition, Action<T> action)
+    public void Cast<T> (Func<T, bool> condition, Action<T> action)
     {
       for (var i = 0; i < setsList.Count; i++)
       {
@@ -89,7 +84,7 @@ namespace Arunoki.Collections
       }
     }
 
-    public override void ForEach (Action<TElement> action)
+    public void ForEach (Action<TElement> action)
     {
       for (var i = 0; i < setsList.Count; i++)
       {
@@ -100,11 +95,12 @@ namespace Arunoki.Collections
       }
     }
 
-    public override void Where (Func<TElement, bool> condition, Action<TElement> action)
+    public void Where (Func<TElement, bool> condition, Action<TElement> action)
     {
       for (var i = 0; i < setsList.Count; i++)
       {
         var set = setsList [i];
+
         for (var index = 0; index < set.Count; index++)
         {
           var element = set [index];
@@ -114,15 +110,12 @@ namespace Arunoki.Collections
       }
     }
 
-    public Set<TElement> Get<TKeyType> ()
-    {
-      return setsCache [typeof(TKeyType)];
-    }
+    public Set<TElement> Get<TType> () => setsCache [typeof(TType)];
 
-    public override void Clear ()
+    public virtual void Clear ()
     {
-      foreach (var set in setsList)
-        set.Clear ();
+      for (var i = 0; i < setsList.Count; i++)
+        setsList [i].Clear ();
     }
   }
 }

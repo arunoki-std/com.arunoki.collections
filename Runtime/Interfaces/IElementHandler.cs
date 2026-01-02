@@ -1,8 +1,8 @@
 namespace Arunoki.Collections
 {
-  public interface ISetHandler<TElement>
+  public interface IElementHandler<TElement>
   {
-    ISetHandler<TElement> TargetSetHandler { get; set; }
+    IElementHandler<TElement> TargetHandler { get; set; }
 
     void OnElementAdded (TElement element);
 

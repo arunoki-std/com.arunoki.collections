@@ -2,20 +2,26 @@ using System.Collections.Generic;
 
 namespace Arunoki.Collections
 {
-  public partial class Set<TKey, TElement>
+  public partial class Set<TKey, TElement> : ElementHandler<TElement>
   {
     /// Reversed list.
     protected List<Pair<TKey, TElement>> Elements = new();
 
     protected Dictionary<TKey, TElement> ElementsByKey = new();
 
+    public Set () : base (null) { }
+    public Set (IElementHandler<TElement> targetHandler) : base (targetHandler) { }
+
     public TElement this [TKey key] => ElementsByKey [key];
 
     public bool Contains (TKey key)
       => ElementsByKey.ContainsKey (key);
 
-    public bool TryGet (TKey key, out TElement value)
-      => ElementsByKey.TryGetValue (key, out value);
+    public bool Contains (TElement element)
+      => ElementsByKey.ContainsValue (element);
+
+    public bool TryGet (TKey key, out TElement element)
+      => ElementsByKey.TryGetValue (key, out element);
 
     public virtual void Add (TKey key, TElement element)
     {
@@ -25,7 +31,7 @@ namespace Arunoki.Collections
       OnElementAdded (element);
     }
 
-    public virtual bool RemoveAt (int index)
+    public bool RemoveAt (int index)
     {
       if (index > -1 && index < Elements.Count)
       {
@@ -35,6 +41,30 @@ namespace Arunoki.Collections
         ElementsByKey.Remove (pair.Key);
 
         OnElementRemoved (pair.Value);
+        return true;
+      }
+
+      return false;
+    }
+
+    public bool Remove (TElement element)
+    {
+      var index = Elements.FindIndex (pair => element.Equals (pair.Value));
+      if (index > -1)
+      {
+        RemoveAt (index);
+        return true;
+      }
+
+      return false;
+    }
+
+    public bool Remove (TKey key)
+    {
+      var index = Elements.FindIndex (pair => key.Equals (pair.Key));
+      if (index > -1)
+      {
+        RemoveAt (index);
         return true;
       }
 

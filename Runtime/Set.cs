@@ -1,19 +1,16 @@
+using Arunoki.Collections.Utilities;
+
 using System;
 using System.Collections.Generic;
 
 namespace Arunoki.Collections
 {
-  public partial class Set<TElement>
+  public partial class Set<TElement> : ElementHandler<TElement>
   {
     protected List<TElement> Elements = new();
 
-    public Set ()
-    {
-    }
-
-    public Set (ISetHandler<TElement> targetHandler) : base (targetHandler)
-    {
-    }
+    public Set () : base (null) { }
+    public Set (IElementHandler<TElement> targetHandler) : base (targetHandler) { }
 
     public TElement this [int index] => Elements [(Elements.Count - 1) - index];
 
@@ -21,6 +18,15 @@ namespace Arunoki.Collections
 
     public virtual void Add (TElement element)
     {
+      if (Utils.IsDebug ())
+      {
+        if (element is null)
+          throw new ArgumentNullException ($"Trying to add a null as element to the collection '{this}'.");
+
+        if (Elements.Contains (element))
+          throw new DuplicateElementException (element, this);
+      }
+
       Elements.Insert (0, element);
       OnElementAdded (element);
     }

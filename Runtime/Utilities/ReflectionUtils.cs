@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Arunoki.Collections.Utils
+namespace Arunoki.Collections.Utilities
 {
   public static class ReflectionUtils
   {
@@ -19,16 +19,19 @@ namespace Arunoki.Collections.Utils
       return result;
     }
 
-    private static void GetNestedTypes<T> (object source, List<T> list, BindingFlags flags)
+    private static void GetNestedTypes<T> (object source, List<T> collection, BindingFlags flags)
     {
       foreach (var obj in source.GetAllProperties<T> (flags))
       {
-        list.Add (obj);
-        GetNestedTypes (obj, list, flags);
+        if (!collection.Contains (obj))
+        {
+          collection.Add (obj);
+          GetNestedTypes (obj, collection, flags);
+        }
       }
     }
 
-    public static IEnumerable<T> GetAllProperties<T> (this object source, BindingFlags flags = PublicFlags)
+    public static List<T> GetAllProperties<T> (this object source, BindingFlags flags = PublicFlags)
     {
       var lookingType = typeof(T);
       var isType = source is Type;
@@ -36,27 +39,37 @@ namespace Arunoki.Collections.Utils
       var sourceObject = isType ? null : source;
       if (isType) flags |= BindingFlags.Static; // fix issue with static singleton field
 
-      foreach (var property in sourceType.GetProperties (flags))
+      var properties = sourceType.GetProperties (flags);
+      var values = new List<T> (properties.Length);
+
+      for (int index = 0; index < properties.Length; index++)
       {
+        var property = properties [index];
+
         if (property.PropertyType == lookingType || lookingType.IsAssignableFrom (property.PropertyType))
         {
           var value = (T) property.GetValue (sourceObject);
-
-          if (value != null)
-            yield return value;
+          if (value != null) values.Add (value);
         }
       }
+
+      return values;
     }
 
-    public static IEnumerable<Type> GetNestedTypes<T> (this Type sourceType, BindingFlags flags = ClassFlags)
+    public static List<Type> GetNestedTypes<T> (this Type sourceType, BindingFlags flags = ClassFlags)
     {
       var baseType = typeof(T);
+      var nestedTypes = sourceType.GetNestedTypes (flags);
+      var result = new List<Type> (nestedTypes.Length);
 
-      foreach (var type in sourceType.GetNestedTypes (flags))
+      for (int index = 0; index < nestedTypes.Length; index++)
       {
+        var type = nestedTypes [index];
         if (!type.IsAbstract && (type == baseType || baseType.IsAssignableFrom (type)))
-          yield return type;
+          result.Add (type);
       }
+
+      return result;
     }
   }
 }

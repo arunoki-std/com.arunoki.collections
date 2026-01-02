@@ -2,7 +2,7 @@ using System;
 
 namespace Arunoki.Collections
 {
-  public interface ISet<TElement> : ISetHandler<TElement>
+  public interface ISet<out TElement>
   {
     void RemoveWhere (Func<TElement, bool> condition);
 
