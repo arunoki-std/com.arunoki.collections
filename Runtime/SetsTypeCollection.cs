@@ -11,10 +11,17 @@ namespace Arunoki.Collections
     public SetsTypeCollection () : this (null) { }
     public SetsTypeCollection (IElementHandler<TElement> elementHandler) : base (elementHandler) { }
 
-    protected virtual void Add (Type keyType, params TElement [] elements)
+    protected void Add (Type keyType, params TElement [] elements)
     {
       var set = GetOrCreate (keyType);
-      foreach (var element in elements) set.Add (element);
+
+      for (var i = 0; i < elements.Length; i++)
+        set.Add (elements [i]);
+    }
+
+    protected void Add (Type keyType, TElement element)
+    {
+      GetOrCreate (keyType).Add (element);
     }
 
     public void RemoveWhere (Func<TElement, bool> condition)

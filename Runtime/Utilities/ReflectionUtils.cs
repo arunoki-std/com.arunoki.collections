@@ -65,6 +65,7 @@ namespace Arunoki.Collections.Utilities
       for (int index = 0; index < nestedTypes.Length; index++)
       {
         var type = nestedTypes [index];
+
         if (!type.IsAbstract && (type == baseType || baseType.IsAssignableFrom (type)))
           result.Add (type);
       }
