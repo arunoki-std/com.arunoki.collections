@@ -21,7 +21,8 @@ namespace Arunoki.Collections
       if (Utils.IsDebug ())
       {
         if (element is null)
-          throw new ArgumentNullException ($"Trying to add a null as element to the collection '{this}'.");
+          throw new ArgumentNullException (nameof(element),
+            $"Trying to add a null as element to the collection '{this}'.");
 
         if (Elements.Contains (element))
           throw new DuplicateElementException (element, this);
@@ -40,8 +41,9 @@ namespace Arunoki.Collections
     {
       if (index > -1 && index < Elements.Count)
       {
+        var element = Elements [index];
         Elements.RemoveAt (index);
-        OnElementRemoved (Elements [index]);
+        OnElementRemoved (element);
         return true;
       }
 

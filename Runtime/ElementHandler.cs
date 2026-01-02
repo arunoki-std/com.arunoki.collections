@@ -21,7 +21,7 @@ namespace Arunoki.Collections
           throw new InvalidOperationException (
             $"Trying to rewrite existing {nameof(IElementHandler<TElement>.TargetHandler)} '{this.targetHandler}' by '{targetHandler}'.");
 
-        if (this.targetHandler == this)
+        if (targetHandler == this)
           throw new InvalidOperationException (
             $"Can't add itself as {nameof(IElementHandler<TElement>.TargetHandler)}");
       }
