@@ -8,10 +8,10 @@ namespace Arunoki.Collections
   {
     public void AddSetsFrom (object source)
     {
-      foreach (var set in source.GetAllProperties<ISet<TElement>> ())
-      {
-        TryAddSet (set);
-      }
+      var setList = source.GetAllProperties<ISet<TElement>> ();
+
+      for (var index = 0; index < setList.Count; index++)
+        TryAddSet (setList [index]);
     }
 
     public void AddSet (ISet<TElement> set)
@@ -28,7 +28,7 @@ namespace Arunoki.Collections
           throw new DuplicateElementException ($"Set '{set}' already exists in the collection of sets '{this}'.");
       }
 
-      sets.Add (set);
+      OnAddSet (set);
     }
 
     public bool TryAddSet (ISet<TElement> set)
@@ -37,11 +37,17 @@ namespace Arunoki.Collections
       if (set == this) return false;
       if (!sets.Contains (set))
       {
-        sets.Add (set);
+        OnAddSet (set);
         return true;
       }
 
       return false;
+    }
+
+    protected virtual void OnAddSet (ISet<TElement> set)
+    {
+      sets.Add (set);
+      (set as IContainer<TElement>).TargetContainer = this;
     }
   }
 }

@@ -122,7 +122,7 @@ namespace Arunoki.Collections
     {
       if (!setsCache.TryGetValue (type, out Set<TElement> set))
       {
-        set = new Set<TElement> ();
+        set = new Set<TElement> (this);
         setsList.Add (set);
         setsCache.Add (type, set);
       }
