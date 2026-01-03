@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Arunoki.Collections
 {
-  public partial class Set<TKey, TElement> : ElementHandler<TElement>
+  public partial class Set<TKey, TElement> : Container<TElement>
   {
     /// Reversed list.
     protected List<Pair<TKey, TElement>> Elements = new();
@@ -10,7 +10,7 @@ namespace Arunoki.Collections
     protected Dictionary<TKey, TElement> ElementsByKey = new();
 
     public Set () : base (null) { }
-    public Set (IElementHandler<TElement> targetHandler) : base (targetHandler) { }
+    public Set (IContainer<TElement> targetContainer) : base (targetContainer) { }
 
     public TElement this [TKey key] => ElementsByKey [key];
 

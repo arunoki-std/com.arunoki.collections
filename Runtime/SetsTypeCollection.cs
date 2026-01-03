@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace Arunoki.Collections
 {
-  public class SetsTypeCollection<TElement> : ElementHandler<TElement>
+  public class SetsTypeCollection<TElement> : Container<TElement>, ISet<TElement>
   {
     private readonly Dictionary<Type, Set<TElement>> setsCache = new();
     private readonly List<Set<TElement>> setsList = new();
 
     public SetsTypeCollection () : this (null) { }
-    public SetsTypeCollection (IElementHandler<TElement> elementHandler) : base (elementHandler) { }
+    public SetsTypeCollection (IContainer<TElement> container) : base (container) { }
 
-    protected void Add (Type keyType, params TElement [] elements)
+    public void Add (Type keyType, params TElement [] elements)
     {
       var set = GetOrCreate (keyType);
 
@@ -19,7 +19,7 @@ namespace Arunoki.Collections
         set.Add (elements [i]);
     }
 
-    protected void Add (Type keyType, TElement element)
+    public void Add (Type keyType, TElement element)
     {
       GetOrCreate (keyType).Add (element);
     }
@@ -30,7 +30,7 @@ namespace Arunoki.Collections
         setsList [index].RemoveWhere (condition);
     }
 
-    protected internal bool Remove (TElement element)
+    public bool Remove (TElement element)
     {
       for (int index = 0; index < setsList.Count; index++)
         if (setsList [index].Remove (element))
@@ -101,7 +101,7 @@ namespace Arunoki.Collections
       }
     }
 
-    protected internal virtual void Clear (Type keyType)
+    public virtual void Clear (Type keyType)
     {
       if (setsCache.TryGetValue (keyType, out Set<TElement> set))
       {
@@ -116,9 +116,9 @@ namespace Arunoki.Collections
         setsList [i].Clear ();
     }
 
-    protected Set<TElement> GetOrCreate<TType> () => GetOrCreate (typeof(TType));
+    public Set<TElement> GetOrCreate<TType> () => GetOrCreate (typeof(TType));
 
-    protected Set<TElement> GetOrCreate (Type type)
+    public Set<TElement> GetOrCreate (Type type)
     {
       if (!setsCache.TryGetValue (type, out Set<TElement> set))
       {

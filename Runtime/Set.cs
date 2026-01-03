@@ -8,12 +8,12 @@ namespace Arunoki.Collections
   /// Ordered unique collection.
   /// Iteration order: insertion order (oldest to newest).
   /// Internal storage may differ to allow removing current element during iteration.
-  public partial class Set<TElement> : ElementHandler<TElement>
+  public partial class Set<TElement> : Container<TElement>
   {
     protected List<TElement> Elements = new();
 
     public Set () : base (null) { }
-    public Set (IElementHandler<TElement> targetHandler) : base (targetHandler) { }
+    public Set (IContainer<TElement> targetContainer) : base (targetContainer) { }
 
     public TElement this [int index] => Elements [(Elements.Count - 1) - index];
     public int Count => Elements.Count;

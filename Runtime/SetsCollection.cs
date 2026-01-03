@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Arunoki.Collections
 {
-  public partial class SetsCollection<TElement> : ElementHandler<TElement>
+  public partial class SetsCollection<TElement> : Container<TElement>
   {
     private readonly List<ISet<TElement>> sets = new();
 
@@ -10,7 +10,7 @@ namespace Arunoki.Collections
     {
     }
 
-    public SetsCollection (IElementHandler<TElement> targetHandler, object setsSource = null) : base (targetHandler)
+    public SetsCollection (IContainer<TElement> targetContainer, object setsSource = null) : base (targetContainer)
     {
       if (setsSource != null)
       {
