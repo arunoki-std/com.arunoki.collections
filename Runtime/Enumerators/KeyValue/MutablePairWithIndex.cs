@@ -23,12 +23,12 @@ namespace Arunoki.Collections.Enumerators
 
       public bool MoveNext () => --index > -1;
 
-      public (int index, TKey key, TValue value) Current
+      public (int index, TKey key, TValue element) Current
       {
         get
         {
           var pair = list [index];
-          return (index, pair.Key, pair.Value);
+          return (index, pair.Key, pair.Element);
         }
       }
     }

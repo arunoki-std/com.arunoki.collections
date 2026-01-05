@@ -31,6 +31,7 @@ namespace Arunoki.Collections.Utilities
       }
     }
 
+    //TODO: optimisation - cache PropertyInfo
     public static List<T> GetAllProperties<T> (this object source, BindingFlags flags = PublicFlags)
     {
       var lookingType = typeof(T);

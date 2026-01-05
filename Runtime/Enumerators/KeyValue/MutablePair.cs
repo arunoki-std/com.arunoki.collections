@@ -28,7 +28,7 @@ namespace Arunoki.Collections.Enumerators
         get
         {
           var pair = list [index];
-          return (pair.Key, pair.Value);
+          return (pair.Key, pair.Element);
         }
       }
     }

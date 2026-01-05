@@ -40,7 +40,7 @@ namespace Arunoki.Collections
         Elements.RemoveAt (index);
         ElementsByKey.Remove (pair.Key);
 
-        OnElementRemoved (pair.Value);
+        OnElementRemoved (pair.Element);
         return true;
       }
 
@@ -49,7 +49,7 @@ namespace Arunoki.Collections
 
     public bool Remove (TElement element)
     {
-      var index = Elements.FindIndex (pair => element.Equals (pair.Value));
+      var index = Elements.FindIndex (pair => element.Equals (pair.Element));
       if (index > -1)
       {
         RemoveAt (index);

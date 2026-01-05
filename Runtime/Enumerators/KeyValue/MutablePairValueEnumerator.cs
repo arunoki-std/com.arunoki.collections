@@ -24,7 +24,7 @@ namespace Arunoki.Collections.Enumerators
 
     object IEnumerator.Current => Current!;
 
-    public TValue Current => list [index].Value;
+    public TValue Current => list [index].Element;
 
     public void Dispose () { }
   }

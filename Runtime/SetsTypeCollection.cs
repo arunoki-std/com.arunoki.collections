@@ -11,6 +11,17 @@ namespace Arunoki.Collections
     public SetsTypeCollection () : this (null) { }
     public SetsTypeCollection (IContainer<TElement> container) : base (container) { }
 
+    public int Count
+    {
+      get
+      {
+        var count = 0;
+        for (var i = 0; i < setsList.Count; i++)
+          count += setsList [i].Count;
+        return count;
+      }
+    }
+
     public void Add (Type keyType, params TElement [] elements)
     {
       var set = GetOrCreate (keyType);
@@ -99,6 +110,14 @@ namespace Arunoki.Collections
             action (element);
         }
       }
+    }
+
+    public bool Any (Func<TElement, bool> condition)
+    {
+      for (var i = 0; i < setsList.Count; i++)
+        if (setsList [i].Any (condition))
+          return true;
+      return false;
     }
 
     public virtual void Clear (Type keyType)

@@ -4,6 +4,17 @@ namespace Arunoki.Collections
 {
   public partial class SetsCollection<TElement> : ISet<TElement>
   {
+    public int Count
+    {
+      get
+      {
+        var count = 0;
+        for (var index = 0; index < sets.Count; index++)
+          count += sets [index].Count;
+        return count;
+      }
+    }
+
     public void ForEachSet<TSet> (Action<TSet> action)
     {
       for (var index = 0; index < sets.Count; index++)
@@ -24,6 +35,14 @@ namespace Arunoki.Collections
     {
       for (var index = 0; index < sets.Count; index++)
         sets [index].RemoveWhere (condition);
+    }
+
+    public bool Any (Func<TElement, bool> condition)
+    {
+      for (var i = 0; i < sets.Count; i++)
+        if (sets [i].Any (condition))
+          return true;
+      return false;
     }
 
     /// For each element do <param name="action"></param> if it passes <param name="condition"></param>

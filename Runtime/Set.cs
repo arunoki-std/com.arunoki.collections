@@ -10,6 +10,7 @@ namespace Arunoki.Collections
   /// Internal storage may differ to allow removing current element during iteration.
   public partial class Set<TElement> : Container<TElement>
   {
+    /// Iteration order: insertion order (oldest to newest)
     protected List<TElement> Elements = new();
 
     public Set () : base (null) { }

@@ -3,15 +3,15 @@ namespace Arunoki.Collections
   public class Pair<TKey, TValue>
   {
     public readonly TKey Key;
-    public readonly TValue Value;
+    public readonly TValue Element;
 
-    public Pair (TKey key, TValue value)
+    public Pair (TKey key, TValue element)
     {
       Key = key;
-      Value = value;
+      Element = element;
     }
 
     public override string ToString ()
-      => $"({Key}, {Value})";
+      => $"({Key}, {Element})";
   }
 }

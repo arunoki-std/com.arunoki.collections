@@ -4,6 +4,14 @@ namespace Arunoki.Collections
 {
   public partial class Set<TElement>
   {
+    public bool Any (Func<TElement, bool> condition)
+    {
+      for (var index = Elements.Count - 1; index >= 0; index--)
+        if (condition (Elements [index]))
+          return true;
+      return false;
+    }
+
     public void RemoveWhere (Func<TElement, bool> condition)
     {
       for (var index = Elements.Count - 1; index >= 0; index--)
@@ -42,7 +50,7 @@ namespace Arunoki.Collections
       }
     }
 
-    public void Clear ()
+    public virtual void Clear ()
     {
       for (var index = Elements.Count - 1; index >= 0; index--)
         RemoveAt (index);
