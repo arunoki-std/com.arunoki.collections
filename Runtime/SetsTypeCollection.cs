@@ -5,8 +5,9 @@ namespace Arunoki.Collections
 {
   public class SetsTypeCollection<TElement> : Container<TElement>, ISet<TElement>
   {
-    private readonly Dictionary<Type, Set<TElement>> setsCache = new();
-    private readonly List<Set<TElement>> setsList = new();
+    //TODO: issue - elements from cache can't be removed
+    protected readonly Dictionary<Type, Set<TElement>> SetsCache = new(8);
+    protected readonly List<Set<TElement>> SetsList = new(32);
 
     public SetsTypeCollection () : this (null) { }
     public SetsTypeCollection (IContainer<TElement> container) : base (container) { }
@@ -16,14 +17,16 @@ namespace Arunoki.Collections
       get
       {
         var count = 0;
-        for (var i = 0; i < setsList.Count; i++)
-          count += setsList [i].Count;
+        for (var i = 0; i < SetsList.Count; i++)
+          count += SetsList [i].Count;
         return count;
       }
     }
 
     public void Add (Type keyType, params TElement [] elements)
     {
+      if (elements == null || elements.Length == 0) return;
+
       var set = GetOrCreate (keyType);
 
       for (var i = 0; i < elements.Length; i++)
@@ -37,14 +40,14 @@ namespace Arunoki.Collections
 
     public void RemoveWhere (Func<TElement, bool> condition)
     {
-      for (int index = 0; index < setsList.Count; index++)
-        setsList [index].RemoveWhere (condition);
+      for (int index = 0; index < SetsList.Count; index++)
+        SetsList [index].RemoveWhere (condition);
     }
 
     public bool Remove (TElement element)
     {
-      for (int index = 0; index < setsList.Count; index++)
-        if (setsList [index].Remove (element))
+      for (int index = 0; index < SetsList.Count; index++)
+        if (SetsList [index].Remove (element))
           return true;
 
       return false;
@@ -52,9 +55,9 @@ namespace Arunoki.Collections
 
     public void ForEach (Predicate<TElement> condition, Action<TElement> action)
     {
-      for (var i = 0; i < setsList.Count; i++)
+      for (var i = 0; i < SetsList.Count; i++)
       {
-        var set = setsList [i];
+        var set = SetsList [i];
 
         for (var index = 0; index < set.Count; index++)
           if (condition (set [index]))
@@ -64,9 +67,9 @@ namespace Arunoki.Collections
 
     public void Cast<T> (Action<T> action)
     {
-      for (var i = 0; i < setsList.Count; i++)
+      for (var i = 0; i < SetsList.Count; i++)
       {
-        var set = setsList [i];
+        var set = SetsList [i];
 
         for (var index = 0; index < set.Count; index++)
           if (set [index] is T cast)
@@ -76,9 +79,9 @@ namespace Arunoki.Collections
 
     public void Cast<T> (Func<T, bool> condition, Action<T> action)
     {
-      for (var i = 0; i < setsList.Count; i++)
+      for (var i = 0; i < SetsList.Count; i++)
       {
-        var set = setsList [i];
+        var set = SetsList [i];
 
         for (var index = 0; index < set.Count; index++)
           if (set [index] is T cast && condition (cast))
@@ -88,9 +91,9 @@ namespace Arunoki.Collections
 
     public void ForEach (Action<TElement> action)
     {
-      for (var i = 0; i < setsList.Count; i++)
+      for (var i = 0; i < SetsList.Count; i++)
       {
-        var set = setsList [i];
+        var set = SetsList [i];
 
         for (var index = 0; index < set.Count; index++)
           action (set [index]);
@@ -99,9 +102,9 @@ namespace Arunoki.Collections
 
     public void Where (Func<TElement, bool> condition, Action<TElement> action)
     {
-      for (var i = 0; i < setsList.Count; i++)
+      for (var i = 0; i < SetsList.Count; i++)
       {
-        var set = setsList [i];
+        var set = SetsList [i];
 
         for (var index = 0; index < set.Count; index++)
         {
@@ -114,45 +117,59 @@ namespace Arunoki.Collections
 
     public bool Any (Func<TElement, bool> condition)
     {
-      for (var i = 0; i < setsList.Count; i++)
-        if (setsList [i].Any (condition))
+      for (var i = 0; i < SetsList.Count; i++)
+        if (SetsList [i].Any (condition))
           return true;
       return false;
     }
 
+    public void Clear<T> () => Clear (typeof(T));
+
     public virtual void Clear (Type keyType)
     {
-      if (setsCache.TryGetValue (keyType, out Set<TElement> set))
+      if (SetsCache.TryGetValue (keyType, out Set<TElement> set))
       {
         set.ForEach (OnElementRemoved);
         set.Clear ();
+        OnKeyRemoved (keyType);
       }
     }
 
     public virtual void Clear ()
     {
-      for (var i = 0; i < setsList.Count; i++)
-        setsList [i].Clear ();
+      for (var i = 0; i < SetsList.Count; i++)
+        SetsList [i].Clear ();
     }
 
     public Set<TElement> GetOrCreate<TType> () => GetOrCreate (typeof(TType));
 
     public Set<TElement> GetOrCreate (Type type)
     {
-      if (!setsCache.TryGetValue (type, out Set<TElement> set))
+      if (!SetsCache.TryGetValue (type, out Set<TElement> set))
       {
         set = new Set<TElement> (this);
-        setsList.Add (set);
-        setsCache.Add (type, set);
+        SetsList.Add (set);
+        SetsCache.Add (type, set);
+        OnKeyAdded (type);
       }
 
       return set;
     }
 
+    /// To override.
+    protected virtual void OnKeyAdded (Type keyType)
+    {
+    }
+
+    /// To override.
+    protected virtual void OnKeyRemoved (Type keyType)
+    {
+    }
+
     public Set<TElement> Get<TType> ()
-      => setsCache [typeof(TType)];
+      => SetsCache [typeof(TType)];
 
     public bool TryGet<TType> (out Set<TElement> set)
-      => setsCache.TryGetValue (typeof(TType), out set);
+      => SetsCache.TryGetValue (typeof(TType), out set);
   }
 }
