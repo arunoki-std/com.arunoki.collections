@@ -18,6 +18,7 @@ namespace Arunoki.Collections
 
     public TElement this [int index] => Elements [(Elements.Count - 1) - index];
     public int Count => Elements.Count;
+    public bool IsEmpty => Elements.Count == 0;
     public bool Contains (TElement element) => Elements.Contains (element);
 
     public virtual void Add (TElement element)
