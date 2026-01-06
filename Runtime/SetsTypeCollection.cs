@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Arunoki.Collections
 {
   public class SetsTypeCollection<TElement> : Container<TElement>, ISet<TElement>
   {
-    //TODO: issue - elements from cache can't be removed
     protected readonly Dictionary<Type, Set<TElement>> SetsCache = new(8);
     protected readonly List<Set<TElement>> SetsList = new(32);
 
@@ -131,14 +131,16 @@ namespace Arunoki.Collections
       {
         set.ForEach (OnElementRemoved);
         set.Clear ();
+
+        SetsCache.Remove (keyType);
         OnKeyRemoved (keyType);
       }
     }
 
     public virtual void Clear ()
     {
-      for (var i = 0; i < SetsList.Count; i++)
-        SetsList [i].Clear ();
+      foreach (var key in SetsCache.Keys.ToArray ())
+        Clear (key);
     }
 
     public Set<TElement> GetOrCreate<TType> () => GetOrCreate (typeof(TType));
