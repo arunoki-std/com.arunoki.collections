@@ -11,7 +11,7 @@ namespace Arunoki.Collections
   public partial class Set<TElement> : Container<TElement>
   {
     /// Iteration order: insertion order (oldest to newest)
-    protected List<TElement> Elements = new();
+    protected List<TElement> Elements = new(8);
 
     public Set () : base (null) { }
     public Set (IContainer<TElement> targetContainer) : base (targetContainer) { }
@@ -35,6 +35,13 @@ namespace Arunoki.Collections
 
       Elements.Insert (0, element);
       OnElementAdded (element);
+    }
+
+    public virtual void AddRange (params TElement [] elements)
+    {
+      if (elements is null) return;
+      for (var i = 0; i < elements.Length; i++)
+        Add (elements [i]);
     }
 
     public virtual bool TryAdd (TElement element)

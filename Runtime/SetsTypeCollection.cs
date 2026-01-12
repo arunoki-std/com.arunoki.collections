@@ -7,7 +7,7 @@ namespace Arunoki.Collections
   public class SetsTypeCollection<TElement> : Container<TElement>, ISet<TElement>
   {
     protected readonly Dictionary<Type, Set<TElement>> SetsCache = new(8);
-    protected readonly List<Set<TElement>> SetsList = new(32);
+    protected readonly List<Set<TElement>> SetsList = new(8);
 
     public SetsTypeCollection () : this (null) { }
     public SetsTypeCollection (IContainer<TElement> container) : base (container) { }
