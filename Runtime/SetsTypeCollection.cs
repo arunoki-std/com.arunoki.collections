@@ -129,7 +129,6 @@ namespace Arunoki.Collections
     {
       if (SetsCache.TryGetValue (keyType, out Set<TElement> set))
       {
-        set.ForEach (OnElementRemoved);
         set.Clear ();
 
         SetsCache.Remove (keyType);
