@@ -25,8 +25,6 @@ namespace Arunoki.Collections
 
     public void Add (Type keyType, params TElement [] elements)
     {
-      if (elements == null || elements.Length == 0) return;
-
       var set = GetOrCreate (keyType);
 
       for (var i = 0; i < elements.Length; i++)
