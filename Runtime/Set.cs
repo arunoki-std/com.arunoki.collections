@@ -11,7 +11,7 @@ namespace Arunoki.Collections
   public partial class Set<TElement> : Container<TElement>
   {
     /// Iteration order: insertion order (oldest to newest)
-    protected List<TElement> Elements = new(8);
+    protected List<TElement> Elements = new(16);
 
     public Set () : base (null) { }
     public Set (IContainer<TElement> targetContainer) : base (targetContainer) { }

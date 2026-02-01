@@ -54,8 +54,6 @@ namespace Arunoki.Collections
     {
       for (var index = Elements.Count - 1; index >= 0; index--)
         RemoveAt (index);
-
-      Elements = new();
     }
   }
 }
