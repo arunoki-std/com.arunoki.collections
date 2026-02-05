@@ -24,7 +24,7 @@ namespace Arunoki.Collections
         if (set == this)
           throw new InvalidOperationException ($"Trying to add itself to the collection of sets '{this}'.");
 
-        if (sets.Contains (set))
+        if (Sets.Contains (set))
           throw new DuplicateElementException ($"Set '{set}' already exists in the collection of sets '{this}'.");
       }
 
@@ -35,7 +35,7 @@ namespace Arunoki.Collections
     {
       if (set is null) return false;
       if (set == this) return false;
-      if (!sets.Contains (set))
+      if (!Sets.Contains (set))
       {
         OnAddSet (set);
         return true;
@@ -46,7 +46,7 @@ namespace Arunoki.Collections
 
     protected virtual void OnAddSet (ISet<TElement> set)
     {
-      sets.Add (set);
+      Sets.Add (set);
       (set as IContainer<TElement>).TargetContainer = this;
     }
   }
