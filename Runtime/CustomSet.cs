@@ -12,6 +12,8 @@ namespace Arunoki.Collections
 
     /// Concrete set.
     protected abstract ISet<TElement> GetSet ();
+    
+    public bool Contains (TElement item) => GetSet ().Contains (item);
 
     public void RemoveWhere (Func<TElement, bool> condition)
       => GetSet ().RemoveWhere (condition);

@@ -140,6 +140,15 @@ namespace Arunoki.Collections
         Clear (key);
     }
 
+    public bool Contains (TElement item)
+    {
+      for (var i = 0; i < SetsList.Count; i++)
+        if (SetsList [i].Contains (item))
+          return true;
+
+      return false;
+    }
+
     public Set<TElement> GetOrCreate<TType> () => GetOrCreate (typeof(TType));
 
     public Set<TElement> GetOrCreate (Type type)

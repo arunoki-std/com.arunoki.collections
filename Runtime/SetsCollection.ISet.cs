@@ -79,5 +79,19 @@ namespace Arunoki.Collections
       for (var index = 0; index < Sets.Count; index++)
         Sets [index].Clear ();
     }
+
+    public bool ContainsSet (object other)
+    {
+      return other is ISet<TElement> set && Sets.Contains (set);
+    }
+
+    public bool Contains (TElement item)
+    {
+      for (var index = 0; index < Sets.Count; index++)
+        if (Sets [index].Contains (item))
+          return true;
+
+      return false;
+    }
   }
 }

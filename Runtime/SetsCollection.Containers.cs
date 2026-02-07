@@ -1,53 +1,30 @@
 using Arunoki.Collections.Utilities;
 
-using System;
-
 namespace Arunoki.Collections
 {
   public partial class SetsCollection<TElement>
   {
-    public void AddSetsFrom (object source)
+    protected void AddSetsFrom (object source)
     {
-      var setList = source.GetAllProperties<ISet<TElement>> ();
-
-      for (var index = 0; index < setList.Count; index++)
-        TryAddSet (setList [index]);
+      source.FindProperties<ISet<TElement>> (TryAddSet);
     }
 
-    public void AddSet (ISet<TElement> set)
-    {
-      if (Utils.IsDebug ())
-      {
-        if (set is null)
-          throw new ArgumentNullException (nameof(set), $"Trying to add null to the collection of sets '{this}'.");
-
-        if (set == this)
-          throw new InvalidOperationException ($"Trying to add itself to the collection of sets '{this}'.");
-
-        if (Sets.Contains (set))
-          throw new DuplicateElementException ($"Set '{set}' already exists in the collection of sets '{this}'.");
-      }
-
-      OnAddSet (set);
-    }
-
-    public bool TryAddSet (ISet<TElement> set)
+    protected virtual bool TryAddSet (ISet<TElement> set)
     {
       if (set is null) return false;
       if (set == this) return false;
-      if (!Sets.Contains (set))
-      {
-        OnAddSet (set);
-        return true;
-      }
+      if (Sets.Contains (set)) return false;
 
-      return false;
+      OnSetAdded (set);
+      return true;
     }
 
-    protected virtual void OnAddSet (ISet<TElement> set)
+    protected virtual void OnSetAdded (ISet<TElement> set)
     {
       Sets.Add (set);
-      (set as IContainer<TElement>).TargetContainer = this;
+
+      if (set is IContainer<TElement> container)
+        container.TargetContainer = this;
     }
   }
 }

@@ -27,7 +27,8 @@ namespace Arunoki.Collections.Utilities
       return result;
     }
 
-    public static List<T> GetAllPropertiesWithNested<T> (this object source, BindingFlags flags = PublicFlags)
+    public static List<T> FindPropertiesWithNested<T> (this object source, Func<T, bool> predicate = null,
+      BindingFlags flags = PublicFlags)
       where T : class
     {
       var visited = new HashSet<T> (ReferenceEqualityComparer<T>.Instance);
@@ -39,10 +40,8 @@ namespace Arunoki.Collections.Utilities
       while (stack.Count > 0)
       {
         var current = stack.Pop ();
-        foreach (var obj in current.GetAllProperties<T> (flags))
+        foreach (var obj in current.FindProperties (predicate, flags))
         {
-          if (obj == null) continue;
-
           if (visited.Add (obj))
           {
             result.Add (obj);
@@ -54,7 +53,8 @@ namespace Arunoki.Collections.Utilities
       return result;
     }
 
-    public static List<T> GetAllProperties<T> (this object source, BindingFlags flags = PublicFlags)
+    public static List<T> FindProperties<T> (this object source, Func<T, bool> predicate = null,
+      BindingFlags flags = PublicFlags)
       where T : class
     {
       if (source == null) throw new ArgumentNullException (nameof(source));
@@ -72,7 +72,9 @@ namespace Arunoki.Collections.Utilities
       {
         var property = cachedProps [i];
         var value = (T) property.GetValue (sourceObject);
-        if (value != null) values.Add (value);
+
+        if (value != null && (predicate == null || predicate (value)))
+          values.Add (value);
       }
 
       return values;

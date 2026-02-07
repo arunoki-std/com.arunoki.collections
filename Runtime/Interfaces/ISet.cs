@@ -2,7 +2,7 @@ using System;
 
 namespace Arunoki.Collections
 {
-  public interface ISet<out TElement>
+  public interface ISet<TElement>
   {
     int Count { get; }
 
@@ -18,5 +18,6 @@ namespace Arunoki.Collections
     bool Any (Func<TElement, bool> condition);
 
     void Clear ();
+    bool Contains (TElement item);
   }
 }
