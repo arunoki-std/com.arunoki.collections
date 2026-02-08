@@ -10,7 +10,7 @@ namespace Arunoki.Collections
     {
     }
 
-    public SetsCollection (IContainer<TElement> targetContainer, object setsSource = null) : base (targetContainer)
+    public SetsCollection (IContainer<TElement> rootContainer, object setsSource = null) : base (rootContainer)
     {
       if (setsSource != null)
       {

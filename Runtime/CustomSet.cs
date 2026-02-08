@@ -4,7 +4,7 @@ namespace Arunoki.Collections
 {
   public abstract class CustomSet<TElement> : Container<TElement>, ISet<TElement>
   {
-    protected CustomSet (IContainer<TElement> targetContainer = null) : base (targetContainer)
+    protected CustomSet (IContainer<TElement> rootContainer = null) : base (rootContainer)
     {
     }
 

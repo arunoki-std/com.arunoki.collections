@@ -10,7 +10,7 @@ namespace Arunoki.Collections
     protected Dictionary<TKey, TElement> ElementsByKey = new();
 
     public Set () : base (null) { }
-    public Set (IContainer<TElement> targetContainer) : base (targetContainer) { }
+    public Set (IContainer<TElement> rootContainer) : base (rootContainer) { }
 
     public TElement this [TKey key] => ElementsByKey [key];
 

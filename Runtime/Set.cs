@@ -10,57 +10,45 @@ namespace Arunoki.Collections
   /// Internal storage may differ to allow removing current element during iteration.
   public partial class Set<TElement> : Container<TElement>
   {
+    private readonly Func<TElement, bool> consumablePredicate;
+
     /// Iteration order: insertion order (oldest to newest)
     protected List<TElement> Elements = new(16);
 
-    public Set () : base (null) { }
-    public Set (IContainer<TElement> targetContainer) : base (targetContainer) { }
+    public Set (Func<TElement, bool> consumablePredicate = null) : base (null)
+    {
+      this.consumablePredicate = consumablePredicate;
+    }
+
+    public Set (IContainer<TElement> rootContainer, Func<TElement, bool> consumablePredicate = null) : base (
+      rootContainer)
+    {
+      this.consumablePredicate = consumablePredicate;
+    }
 
     public TElement this [int index] => Elements [(Elements.Count - 1) - index];
     public int Count => Elements.Count;
     internal bool IsEmpty => Elements.Count == 0;
     public bool Contains (TElement element) => Elements.Contains (element);
 
-    public virtual void Add (TElement element)
+    public virtual bool TryAdd (TElement element)
     {
-      if (Utils.IsDebug ())
-      {
-        if (element is null)
-          throw new ArgumentNullException (nameof(element),
-            $"Trying to add a null as element to the collection '{this}'.");
+      if (!IsConsumable (element))
+        return false;
 
-        if (Elements.Contains (element))
-          throw new DuplicateElementException (element, this);
-      }
+      if (Elements.Contains (element))
+        return false;
 
       Elements.Insert (0, element);
       OnElementAdded (element);
+
+      return true;
     }
 
     public virtual void AddRange (params TElement [] elements)
     {
-      if (elements is null) return;
       for (var i = 0; i < elements.Length; i++)
-        Add (elements [i]);
-    }
-
-    public virtual bool TryAdd (TElement element)
-    {
-      if (Utils.IsDebug ())
-      {
-        if (element is null)
-          throw new ArgumentNullException (nameof(element),
-            $"Trying to add a null as element to the collection '{this}'.");
-      }
-
-      if (!Elements.Contains (element))
-      {
-        Elements.Insert (0, element);
-        OnElementAdded (element);
-        return true;
-      }
-
-      return false;
+        TryAdd (elements [i]);
     }
 
     public virtual bool Remove (TElement element)
@@ -80,5 +68,8 @@ namespace Arunoki.Collections
 
       return false;
     }
+
+    public virtual bool IsConsumable (TElement element)
+      => consumablePredicate?.Invoke (element) ?? element is not null;
   }
 }

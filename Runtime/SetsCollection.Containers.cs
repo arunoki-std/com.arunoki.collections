@@ -24,7 +24,7 @@ namespace Arunoki.Collections
       Sets.Add (set);
 
       if (set is IContainer<TElement> container)
-        container.TargetContainer = this;
+        container.RootContainer = this;
     }
   }
 }

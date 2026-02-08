@@ -6,47 +6,47 @@ namespace Arunoki.Collections
 {
   public abstract class Container<TElement> : IContainer<TElement>
   {
-    private IContainer<TElement> targetContainer;
+    private IContainer<TElement> rootContainer;
 
-    protected Container (IContainer<TElement> targetContainer)
+    protected Container (IContainer<TElement> rootContainer)
     {
-      SetTargetContainer (targetContainer);
+      SetRootContainer (rootContainer);
     }
 
-    protected void SetTargetContainer (IContainer<TElement> targetContainer)
+    protected void SetRootContainer (IContainer<TElement> targetContainer)
     {
       if (Utils.IsDebug ())
       {
-        if (this.targetContainer != null && targetContainer != null)
+        if (this.rootContainer != null && targetContainer != null)
           throw new InvalidOperationException (
-            $"Trying to rewrite existing {nameof(this.targetContainer)} '{this.targetContainer}' by '{targetContainer}'.");
+            $"Trying to rewrite existing {nameof(this.rootContainer)} '{this.rootContainer}' by '{targetContainer}'.");
 
         if (targetContainer == this)
           throw new InvalidOperationException (
-            $"Can't add itself as {nameof(this.targetContainer)}");
+            $"Can't add itself as {nameof(this.rootContainer)}");
       }
 
-      this.targetContainer = targetContainer;
+      this.rootContainer = targetContainer;
     }
 
-    IContainer<TElement> IContainer<TElement>.TargetContainer
+    IContainer<TElement> IContainer<TElement>.RootContainer
     {
-      get => targetContainer;
-      set => SetTargetContainer (value);
+      get => rootContainer;
+      set => SetRootContainer (value);
     }
 
-    void IContainer<TElement>.OnElementAdded (TElement element) => OnElementAdded (element);
+    void IContainer<TElement>.OnAdded (TElement element) => OnElementAdded (element);
 
-    void IContainer<TElement>.OnElementRemoved (TElement element) => OnElementRemoved (element);
+    void IContainer<TElement>.OnRemoved (TElement element) => OnElementRemoved (element);
 
     protected virtual void OnElementAdded (TElement element)
     {
-      targetContainer?.OnElementAdded (element);
+      rootContainer?.OnAdded (element);
     }
 
     protected virtual void OnElementRemoved (TElement element)
     {
-      targetContainer?.OnElementRemoved (element);
+      rootContainer?.OnRemoved (element);
     }
   }
 }

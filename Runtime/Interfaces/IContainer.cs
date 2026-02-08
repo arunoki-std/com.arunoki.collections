@@ -2,10 +2,10 @@ namespace Arunoki.Collections
 {
   public interface IContainer<T>
   {
-    IContainer<T> TargetContainer { get; set; }
+    IContainer<T> RootContainer { get; set; }
 
-    void OnElementAdded (T element);
+    void OnAdded (T element);
 
-    void OnElementRemoved (T element);
+    void OnRemoved (T element);
   }
 }

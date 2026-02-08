@@ -6,11 +6,36 @@ namespace Arunoki.Collections
 {
   public class SetsTypeCollection<TElement> : Container<TElement>, ISet<TElement>
   {
-    protected readonly Dictionary<Type, Set<TElement>> SetsCache = new(8);
-    protected readonly List<Set<TElement>> SetsList = new(8);
+    protected readonly Dictionary<Type, Set<TElement>> SetsCache = new(16);
+    protected readonly List<Set<TElement>> SetsList = new(16);
 
-    public SetsTypeCollection () : this (null) { }
-    public SetsTypeCollection (IContainer<TElement> container) : base (container) { }
+    private readonly IContainer<Type> rootKeyContainer;
+
+    public SetsTypeCollection ()
+      : this (null, null)
+    {
+    }
+
+    public SetsTypeCollection (IContainer<Type> rootKeyContainer)
+      : this (null, rootKeyContainer)
+    {
+    }
+
+    public SetsTypeCollection (IContainer<TElement> rootElementsContainer, IContainer<Type> rootKeyContainer = null)
+      : base (rootElementsContainer)
+    {
+      this.rootKeyContainer = rootKeyContainer;
+    }
+
+    protected virtual void OnKeyAdded (Type keyType)
+    {
+      rootKeyContainer?.OnAdded (keyType);
+    }
+
+    protected virtual void OnKeyRemoved (Type keyType)
+    {
+      rootKeyContainer?.OnRemoved (keyType);
+    }
 
     public int Count
     {
@@ -23,17 +48,17 @@ namespace Arunoki.Collections
       }
     }
 
-    public void Add (Type keyType, params TElement [] elements)
+    public void TryAddRange (Type keyType, params TElement [] elements)
     {
       var set = GetOrCreate (keyType);
 
       for (var i = 0; i < elements.Length; i++)
-        set.Add (elements [i]);
+        set.TryAdd (elements [i]);
     }
 
-    public void Add (Type keyType, TElement element)
+    public bool TryAdd (Type keyType, TElement element)
     {
-      GetOrCreate (keyType).Add (element);
+      return GetOrCreate (keyType).TryAdd (element);
     }
 
     public void RemoveWhere (Func<TElement, bool> condition)
@@ -162,16 +187,6 @@ namespace Arunoki.Collections
       }
 
       return set;
-    }
-
-    /// To override.
-    protected virtual void OnKeyAdded (Type keyType)
-    {
-    }
-
-    /// To override.
-    protected virtual void OnKeyRemoved (Type keyType)
-    {
     }
 
     public Set<TElement> Get<TType> ()
