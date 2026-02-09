@@ -32,7 +32,6 @@ namespace Arunoki.Collections.Utilities
       where T : class
     {
       var visited = new HashSet<T> (ReferenceEqualityComparer<T>.Instance);
-
       var result = new List<T> ();
       var stack = new Stack<object> ();
       stack.Push (source);
