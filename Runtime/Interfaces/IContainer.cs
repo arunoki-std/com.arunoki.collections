@@ -1,9 +1,7 @@
 namespace Arunoki.Collections
 {
-  public interface IContainer<T>
+  public interface IContainer<in T>
   {
-    IContainer<T> RootContainer { get; set; }
-
     void OnAdded (T element);
 
     void OnRemoved (T element);

@@ -22,9 +22,6 @@ namespace Arunoki.Collections
     protected virtual void OnSetAdded (ISet<TElement> set)
     {
       Sets.Add (set);
-
-      if (set is IContainer<TElement> container)
-        container.RootContainer = this;
     }
   }
 }
