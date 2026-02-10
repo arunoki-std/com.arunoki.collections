@@ -1,3 +1,5 @@
+using Arunoki.Collections.Enumerators;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -194,5 +196,7 @@ namespace Arunoki.Collections
 
     public bool TryGet<TType> (out Set<TElement> set)
       => SetsCache.TryGetValue (typeof(TType), out set);
+
+    public SetListEnumerator<TElement> GetEnumerator () => new(SetsList);
   }
 }
