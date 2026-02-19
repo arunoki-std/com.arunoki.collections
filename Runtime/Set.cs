@@ -11,7 +11,7 @@ namespace Arunoki.Collections
     private readonly Func<TElement, bool> consumablePredicate;
 
     /// Iteration order: insertion order (oldest to newest)
-    protected List<TElement> Elements = new(16);
+    protected readonly List<TElement> Elements = new(16);
 
     public Set (Func<TElement, bool> consumablePredicate = null) : base (null)
     {
@@ -69,5 +69,8 @@ namespace Arunoki.Collections
 
     public virtual bool IsConsumable (TElement element)
       => consumablePredicate?.Invoke (element) ?? element is not null;
+
+    /// Iteration order: insertion order (oldest to newest)
+    public List<TElement> GetList () => Elements;
   }
 }
