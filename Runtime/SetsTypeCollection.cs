@@ -8,24 +8,28 @@ namespace Arunoki.Collections
 {
   public class SetsTypeCollection<TElement> : Container<TElement>, ISet<TElement>
   {
+    private readonly Func<TElement, bool> consumablePredicate;
+
     protected readonly Dictionary<Type, Set<TElement>> SetsCache = new(16);
     protected readonly List<Set<TElement>> SetsList = new(16);
 
     private readonly IContainer<Type> rootKeyContainer;
 
-    public SetsTypeCollection ()
-      : this (null, null)
+    public SetsTypeCollection (Func<TElement, bool> consumablePredicate = null)
+      : this (null, null, consumablePredicate)
     {
     }
 
-    public SetsTypeCollection (IContainer<Type> rootKeyContainer)
-      : this (null, rootKeyContainer)
+    public SetsTypeCollection (IContainer<Type> rootKeyContainer, Func<TElement, bool> consumablePredicate = null)
+      : this (null, rootKeyContainer, consumablePredicate)
     {
     }
 
-    public SetsTypeCollection (IContainer<TElement> rootElementsContainer, IContainer<Type> rootKeyContainer = null)
+    public SetsTypeCollection (IContainer<TElement> rootElementsContainer, IContainer<Type> rootKeyContainer = null,
+      Func<TElement, bool> consumablePredicate = null)
       : base (rootElementsContainer)
     {
+      this.consumablePredicate = consumablePredicate;
       this.rootKeyContainer = rootKeyContainer;
     }
 
@@ -182,7 +186,7 @@ namespace Arunoki.Collections
     {
       if (!SetsCache.TryGetValue (type, out Set<TElement> set))
       {
-        set = new Set<TElement> (this);
+        set = new Set<TElement> (this, consumablePredicate);
         SetsList.Add (set);
         SetsCache.Add (type, set);
         OnKeyAdded (type);
