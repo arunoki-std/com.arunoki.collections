@@ -12,7 +12,7 @@ namespace Arunoki.Collections.Utilities
     public static List<Type> GetNestedTypes<T> (this Type sourceType, BindingFlags flags = ClassFlags)
       where T : class
     {
-      var baseType = typeof(T);
+      var targetType = typeof(T);
       var nestedTypes = sourceType.GetNestedTypes (flags);
       var result = new List<Type> (nestedTypes.Length);
 
@@ -20,8 +20,11 @@ namespace Arunoki.Collections.Utilities
       {
         var type = nestedTypes [index];
 
-        if (!type.IsAbstract && (type == baseType || baseType.IsAssignableFrom (type)))
+        if (!type.IsAbstract &&
+            (type == targetType || targetType.IsAssignableFrom (type) || type.IsSubclassOf (targetType)))
+        {
           result.Add (type);
+        }
       }
 
       return result;
@@ -52,8 +55,17 @@ namespace Arunoki.Collections.Utilities
       return result;
     }
 
-    public static List<T> FindProperties<T> (this object source, Func<T, bool> predicate = null,
-      BindingFlags flags = PublicFlags)
+    public static List<T> FindProperties<T> (this object source) where T : class
+      => FindProperties<T> (source, null, PublicFlags);
+
+    public static List<T> FindProperties<T> (this object source, BindingFlags flags) where T : class
+      => FindProperties<T> (source, null, flags);
+
+    public static List<T> FindProperties<T> (this object source, Func<T, bool> predicate) where T : class
+      => FindProperties (source, predicate, PublicFlags);
+
+    public static List<T> FindProperties<T> (this object source, Func<T, bool> predicate,
+      BindingFlags flags)
       where T : class
     {
       if (source == null) throw new ArgumentNullException (nameof(source));
