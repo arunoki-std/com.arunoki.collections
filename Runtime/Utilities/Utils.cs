@@ -13,7 +13,7 @@ namespace Arunoki.Collections.Utilities
 
     public static bool IsDebug ()
     {
-#if DEBUG || UNITY_EDITOR
+#if DEVELOPMENT_BUILD || (UNITY_EDITOR && DEBUG)
       return true;
 #else
       return false;
