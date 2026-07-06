@@ -10,6 +10,10 @@ Allocation-free collection utilities for Unity. Leaf package — depends on noth
 - Key types: `Container<T>`, `SetsCollection`, `SetsTypeCollection<T>`, custom enumerators
 - Consumers (in host project): com.arunoki.flow, com.arunoki.core, game code
 
+## ⚠ Status: future under review
+
+Host spec RF-007 (host `specs/refactoring/`): usage audit showed this package serves only `flow`; the default option is to merge it into `com.arunoki.flow` and retire this repo. Until that decision: bugfixes only — no new features, tests, or refactoring here.
+
 ## Rules
 
 - NEVER add references to other Arunoki packages or UnityEngine-heavy APIs — this package must stay a dependency-free leaf.
