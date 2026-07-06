@@ -1,23 +1,23 @@
 namespace Arunoki.Collections.Utilities
 {
-  internal static class Utils
-  {
-    public static bool IsEditor ()
+    internal static class Utils
     {
+        public static bool IsEditor()
+        {
 #if UNITY_EDITOR
-      return true;
+            return true;
 #else
-      return false;
+            return false;
 #endif
-    }
+        }
 
-    public static bool IsDebug ()
-    {
+        public static bool IsDebug()
+        {
 #if DEVELOPMENT_BUILD || (UNITY_EDITOR && DEBUG)
-      return true;
+            return true;
 #else
-      return false;
+            return false;
 #endif
+        }
     }
-  }
 }
